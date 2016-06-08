@@ -158,9 +158,33 @@ Animation.prototype._runTask = function(){
 * @private
 *
 * */
-Animation.prototype._syncTask = function(){
-    
+Animation.prototype._syncTask = function(task){
+    var me = this;
+    var next = function(){
+      //切换到下一个任务
+        me._next()
+    };
+    var taskFn = task.taskFn;
+    taskFn(next)
 };
+/*
+* 异步任务
+* @poram task 执行的任务对象
+* @private
+* */
+Animation.prototype._asyncTask = function(task){
+
+};
+/*
+* 切换到下一个任务
+* @private
+* */
+Animation.prototype._next = function(){
+    this.index ++ ;
+    this._runTask()
+};
+
+
 
 
 
