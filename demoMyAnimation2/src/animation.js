@@ -10,6 +10,10 @@ var STATE_START = 1;
 //停止状态
 var STATE_STOP = 2;
 
+//同步任务
+var TASK_SYNC = 0;
+//异步任务
+var TASK_ASYNC = 1;
 /*
 * 帧动画库
 * @constructor
@@ -65,7 +69,17 @@ Animation.prototype.then = function(callback){
 * @param interval
 * */
 Animation.prototype.start = function(interval){
-
+    if(this.state ===STATE_START){
+        return this
+    }
+    //如果任务链中没有任务，则返回
+    if(!this.taskQueue.length){
+        return this
+    }
+    this.state = STATE_START;
+    this.interval = interval;
+    this._runTask();
+    return this
 };
 /*
 *添加一个同步任务，该任务就是回退到上一个任务中，
@@ -104,6 +118,48 @@ Animation.prototype.restart = function(){
 * */
 Animation.prototype.dispose = function(){
 
+};
+
+/*
+* 添加一个任务到任务队列中
+* @param taskFn 任务方法
+* @param type 任务类型
+* @private
+* */
+Animation.prototype._add = function(taskFn,type){
+    this.taskQueue.push({
+        taskFn:taskFn,
+        type:type
+    })
+};
+/*
+* 执行任务
+* @private
+* */
+Animation.prototype._runTask = function(){
+    if(!this.taskQueue || this.state !== STATE_START){
+        return
+    }
+    //任务执行完毕
+    if(this.index === this.taskQueue.length){
+        this.dispose()
+    }
+//    获得任务链上当前任务
+    var task = this.taskQueue[this.index];
+    if(task.type === TASK_SYNC){
+        this._syncTask(task)
+    }else{
+        this._asyncTask(task)
+    }
+};
+/*
+* 同步任务
+* @poram task 执行的任务对象
+* @private
+*
+* */
+Animation.prototype._syncTask = function(){
+    
 };
 
 
