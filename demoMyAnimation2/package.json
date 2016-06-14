@@ -1,0 +1,9 @@
+{
+  "name": "webpack",
+  "version": "0.0.1",
+  "devDependencies": {
+    "webpack":"^1.13.1"
+  }
+
+
+}
